@@ -2,7 +2,7 @@
 
 __author__ = "Flavius Ion"
 __email__ = "igflavius@odyssee.ro"
-__version__ = "1.0"
+__version__ = "1.1"
 
 import argparse
 import requests
@@ -27,13 +27,16 @@ def main():
         data = json.loads(req)        
     except requests.RequestException:
         print("[!] unable to connect to {0}".format(arg.ip))
-        sys.exit()
+        sys.exit(0)
+    except json.decoder.JSONDecodeError:
+        print("[-] Please provide a HDHomeRun Device!")
+        sys.exit(0)
 
     # WebGrab++ Config
     xmlConfig = """    
           <settings>
           
-            <filename>/storage/media/epg/guide.xml</filename>
+            <filename>guide.xml</filename>
             <postprocess grab="y" run="n">mdb</postprocess>
             <proxy>automatic</proxy>
             <user-agent>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36</user-agent>
@@ -51,6 +54,7 @@ def main():
     root = tree.getroot()
 
     element = etree.Element("channels")
+    print("[+] Get HDHomeRun Lineup Channels")
     for item in data:
         channel = item["GuideName"].replace(" ", "-").lower()
         channelNumber = item["GuideNumber"]
@@ -58,9 +62,11 @@ def main():
         subelement=etree.SubElement(element, "channel", update="i", site="cinemagia.ro", site_id=channel, xmltv_id=channelNumber)
         subelement.text = channelName
         root.append(element)
-     
+    
+    print("[+] Generate WebGrab++.config.xml") 
     with open(arg.save, "wb") as file:
         tree.write(file, encoding="utf-8", xml_declaration=True, pretty_print=True)
+        print("[+] Write WebGrab++.config.xml")
 
 
 if __name__ == "__main__":
