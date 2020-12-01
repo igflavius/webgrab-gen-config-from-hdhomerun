@@ -53,8 +53,8 @@ def main():
     tree = etree.parse(StringIO(xmlConfig), parser)
     root = tree.getroot()
 
-    element = etree.Element("channels")
     print("[+] Get HDHomeRun Lineup Channels")
+    element = etree.Element("channels")
     for item in data:
         channel = item["GuideName"].replace(" ", "-").lower()
         channelNumber = item["GuideNumber"]
