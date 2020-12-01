@@ -31,6 +31,7 @@ def main():
     except json.decoder.JSONDecodeError:
         print("[-] Please provide a HDHomeRun Device!")
         sys.exit(0)
+    print("[+] Get HDHomeRun Lineup Channels")
 
     # WebGrab++ Config
     xmlConfig = """    
@@ -49,12 +50,10 @@ def main():
           </settings>      
           """
     
-    print("[+] Get HDHomeRun Lineup Channels")
     parser = etree.XMLParser(remove_blank_text=True, ns_clean=True)
     tree = etree.parse(StringIO(xmlConfig), parser)
     root = tree.getroot()
-
-    print("[+] Generate WebGrab++.config.xml") 
+ 
     element = etree.Element("channels")
     for item in data:
         channel = item["GuideName"].replace(" ", "-").lower()
@@ -63,10 +62,11 @@ def main():
         subelement=etree.SubElement(element, "channel", update="i", site="cinemagia.ro", site_id=channel, xmltv_id=channelNumber)
         subelement.text = channelName
         root.append(element)
+    print("[+] Generate WebGrab++.config.xml")
     
-    print("[+] Write WebGrab++.config.xml")
     with open(arg.save, "wb") as file:
         tree.write(file, encoding="utf-8", xml_declaration=True, pretty_print=True)
+        print("[+] Write WebGrab++.config.xml")
 
 
 if __name__ == "__main__":
