@@ -23,11 +23,10 @@ def arguments():
 
 def main():    
     try:
-        url = arg.ip
-        req = requests.get("http://" + url + "/lineup.json").text
+        req = requests.get("http://" + arg.ip + "/lineup.json").text
         data = json.loads(req)        
     except requests.RequestException:
-        print("[!] unable to connect to {0}".format(url))
+        print("[!] unable to connect to {0}".format(arg.ip))
         sys.exit()
 
     # WebGrab++ Config
