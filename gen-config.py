@@ -49,11 +49,12 @@ def main():
           </settings>      
           """
     
+    print("[+] Get HDHomeRun Lineup Channels")
     parser = etree.XMLParser(remove_blank_text=True, ns_clean=True)
     tree = etree.parse(StringIO(xmlConfig), parser)
     root = tree.getroot()
 
-    print("[+] Get HDHomeRun Lineup Channels")
+    print("[+] Generate WebGrab++.config.xml") 
     element = etree.Element("channels")
     for item in data:
         channel = item["GuideName"].replace(" ", "-").lower()
@@ -63,10 +64,9 @@ def main():
         subelement.text = channelName
         root.append(element)
     
-    print("[+] Generate WebGrab++.config.xml") 
+    print("[+] Write WebGrab++.config.xml")
     with open(arg.save, "wb") as file:
         tree.write(file, encoding="utf-8", xml_declaration=True, pretty_print=True)
-        print("[+] Write WebGrab++.config.xml")
 
 
 if __name__ == "__main__":
