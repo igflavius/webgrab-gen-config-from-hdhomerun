@@ -6,6 +6,8 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     strategy:
+      matrix:
+        python-version: ['2.x', '3.x']
       max-parallel: 5
 
     steps:
